@@ -1,0 +1,70 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.9.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath 'com.bmuschko:gradle-docker-plugin:3.2.4'
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'com.bmuschko.docker-remote-api'
+apply plugin: 'com.bmuschko.docker-java-application'
+
+group = 'com.sixdelta'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+	jcenter()
+}
+
+
+ext {
+	springCloudVersion = 'Edgware.RELEASE'
+}
+
+jar {
+    baseName = 'docker'
+    version =  '0.1.0'
+}
+
+dependencies {
+	compile('org.springframework.cloud:spring-cloud-starter-oauth2')
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-data-rest')
+	runtime('mysql:mysql-connector-java')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile('org.mockito:mockito-core:2.+')
+	testCompile('junit:junit:4.12')
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
+task buildImage(type: DockerBuildImage) {
+    inputDir = project.file('Dockerfile').parentFile
+    tag = 'project-dockerImage:latest'
+}
+
+
+task docker {
+	exec {
+		//docker build -f Dockerfile -t spring-boot-app .
+		executable 'docker'
+		args 'build', '-f',  'Dockerfile', '-t', 'spring-boot', '.'
+	}
+}

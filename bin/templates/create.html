@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Cuenta</title>
+		<base href="/" />
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="599553821743-9d9kojku60em44qr2qcmn3qgskc8oadi.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <section class="container">
+            <div class="jumbotron">     
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="panel panel-success" style="width: 400px;">
+                            <form>
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Crear cuenta</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label for="strnombre">Nombre: </label>
+                                        <input type="text" class="form-control" maxlength="50" name="strnombre" id="strnombre">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="strdireccion">Dirección: </label>
+                                        <input type="text" class="form-control" maxlength="50" name="strdireccion" id="strdireccion">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="strcorreo">Correo: </label>
+                                        <input type="text" class="form-control" maxlength="30"  name="strcorreo" id="strcorreo">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="strtelefono">Teléfono: </label>
+                                        <input type="text" class="form-control" name="strtelefono" maxlength="10" id="strtelefono">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="strsaldo">Saldo: </label>
+                                        <input type="text" class="form-control" maxlength="15" name="strsaldo" id="strsaldo">
+                                    </div>
+                                    <!--<div class="form-group">
+                                        <label for="strejecutivo">Ejecutivo: </label>
+                                        <input type="text" class="form-control" maxlength="50" name="strejecutivo" id="strejecutivo">
+                                    </div>-->
+                                    <input type="hidden" name="strejecutivo" id="strejecutivo">
+                                </div>
+                                <div class="pa-footer">
+                                    <div class="form-group">
+                                        <input type="button" name="btnCrea" id="btnCrea" value="Agregar" class="btn btn-primary" style="margin: 0px 0px 0px 15px;">
+                                    </div>
+                                    <div id="loadinggif"></div>
+                                </div>
+                            </form>            
+                            <div id="logidentity" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="datos">
+                            <img src="http://careers.ohio.gov/portals/0/images/person-button.png" >
+                        </div>
+                    </div>
+                </div>                 
+            </div>
+        </section>
+
+        <script>
+            function getExpresion(texto, type) {
+                if($.trim(type) === "n"){
+                    if(!/^([1-9])*$/.exec(texto))
+                        return true;
+                    
+                    return false;
+                }else if($.trim(type) === "d"){
+                    if(!/^[1-9]+([.])?([0-9]+)?$/.exec(texto))
+                        return true;
+                    
+                    return false;
+                }else if($.trim(type) === "c" ){
+                    if(!/^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,3})$/.exec(texto))
+                        return true;
+                    return false;
+                }
+            }
+
+            $("#strsaldo").keypress(function(){
+                if( getExpresion( $("#strsaldo").val(), "d" ) ){
+                    $("#strsaldo").val("");
+                }
+            });
+
+            $("#strtelefono").keypress(function(){
+                if( getExpresion( $("#strtelefono").val(), "n" ) ){
+                    $("#strtelefono").val("");
+                }
+            });
+            var ejecutivo = "CorreoDefault";
+            $("#btnCrea").click(function(){
+
+                jsonObj = {
+                    "name":$("#strnombre").val(),
+                    "address":$("#strdireccion").val(),
+                    "email": $("#strcorreo").val(),
+                    "phone":$("#strtelefono").val(),
+                    "amount":$("#strsaldo").val(),
+                    "excecutive":$("#strejecutivo").val();
+                };
+                console.log("CLICK");
+                console.log(jsonObj);
+                console.log(JSON.stringify(jsonObj));
+
+                var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "http://localhost:8080/alta",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Cache-Control": "no-cache",
+                    "Postman-Token": "f98a90de-0233-e6e9-c02b-1d7b457c3f63"
+                },
+                "processData": false,
+                "data": JSON.stringify(jsonObj)
+                }
+
+                $.ajax(settings).done(function (response) {
+                console.log(response);
+                });
+            });
+            
+
+
+            function onSignIn(googleUser) {
+                var profile = googleUser.getBasicProfile();
+                console.log("ID: " + profile.getId());
+                console.log('Full Name: ' + profile.getName());
+                console.log("Email: " + profile.getEmail());
+                var id_token = googleUser.getAuthResponse().id_token;
+                ejecutivo = profile.getEmail();
+                console.log("ID Token: " + id_token);
+                
+                if(profile.getName() == ""){
+                	location.href = "/";
+                }else{
+                	$("#strejecutivo").val(profile.getEmail());
+                	$("#logidentity").hide("slow");
+                }
+            };
+    	</script>
+    </body>
+</html>
