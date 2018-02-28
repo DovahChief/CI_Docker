@@ -5,4 +5,4 @@ docker build -f Dockerfile -t test  .
 
 #docker save -o ./image.tar project-dockerImage
 # docker load -i 
-echo "COMANDO PARA PASAR IMAGEN DE DOCKER"
+echo "COMANDO PARA PASAR IMAGEN DE DOCKER 2"
