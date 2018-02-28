@@ -59,12 +59,3 @@ task buildImage(type: DockerBuildImage) {
     inputDir = project.file('Dockerfile').parentFile
     tag = 'project-dockerImage:latest'
 }
-
-
-task docker {
-	exec {
-		//docker build -f Dockerfile -t spring-boot-app .
-		executable 'docker'
-		args 'build', '-f',  'Dockerfile', '-t', 'spring-boot', '.'
-	}
-}
