@@ -7,15 +7,12 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath 'com.bmuschko:gradle-docker-plugin:3.2.4'
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'com.bmuschko.docker-remote-api'
-apply plugin: 'com.bmuschko.docker-java-application'
 
 group = 'com.sixdelta'
 version = '0.0.1-SNAPSHOT'
@@ -50,12 +47,4 @@ dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
-}
-
-
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-
-task buildImage(type: DockerBuildImage) {
-    inputDir = project.file('Dockerfile').parentFile
-    tag = 'project-dockerImage:latest'
 }
