@@ -3,6 +3,5 @@
 #Crea la imagen de Docker
 docker build -f Dockerfile -t stored_app  .
 
-#docker save -o ./image.tar project-dockerImage
-# docker load -i 
+# Corre la imagen de Docker
 echo "COMANDO PARA Iniciar Docker"
